@@ -1,20 +1,23 @@
 <?php
 
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\WelcomeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ApplicationApiController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::post('/login', [AuthController::class, 'login']);
 
-//Route::get('/welcome', function () {
-  //  return 'welcom to api';
-//});
-Route::get('/welcome',[WelcomeController::class, "welcome"]
-);
-//Route::get('/user',[UserController::class, "index"]
-//);
-Route::get('/user{id}',[UserController::class, "CheckUser"]
-);
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/user', function (Request $request) {
+        return response()->json([
+            'success' => true,
+            'data' => $request->user()
+        ]);
+    });
+
+    Route::post('/logout', [AuthController::class, 'logout']);
+
+    Route::apiResource('applications', ApplicationApiController::class)
+    ->names('api.applications');
+});

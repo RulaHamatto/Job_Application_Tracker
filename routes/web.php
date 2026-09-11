@@ -1,13 +1,19 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SecondeController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ApplicationController;
+use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\InterviewController;
+use App\Http\Controllers\NoteController;
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('login');
 });
-
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -31,5 +37,13 @@ require __DIR__.'/auth.php';
 //Route::get('/secondefile', [SecondeController::class, 'secondeAction'])
  //   ->middleware('admin');
 
+//الـ Route::resource سيولد لنا Routes الخاصة بالـ CRUD بدل ما نكتب السبعة يدويًا.
+ Route::middleware('auth')->group(function () {
+    Route::resource('applications', ApplicationController::class);
+        Route::resource('companies', CompanyController::class);
+            Route::resource('interviews', InterviewController::class);
+Route::resource('notes', NoteController::class);
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->name('dashboard');
+});
 
-Route::get('/secondes', [SecondeController::class, 'index']);
